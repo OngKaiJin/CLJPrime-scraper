@@ -1,4 +1,5 @@
 command = '';
+checked = [];
 suffix = '_mmu1.pdf';
 isinvalid = (id) => {
     for (j of invalid.nopdf) {
@@ -9,7 +10,16 @@ isinvalid = (id) => {
 }
 for (i of nodes) {
     if (!isinvalid(i.id)) {
-        command += i.id + " " + i.pdf.replace("/tempreport/","").replace(suffix,"");
+        count = 0;
+        for (j of checked) {
+          	if (i.pdf == j) {
+            	count = count + 1;
+          	}
+        }
+        checked.push(i.pdf);
+        if (!count) {
+          	command += i.id + " " + i.pdf.replace("/tempreport/","").replace(suffix,"");
+        }
     }
     command += '\n';
 }
