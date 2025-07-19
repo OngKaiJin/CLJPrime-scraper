@@ -8,18 +8,21 @@ isinvalid = (id) => {
         }
     }
 }
+isduplicate = (pdf) => {
+    count = 0;
+    for (j of checked) {
+        if (pdf == j) {
+            count = count + 1;
+        }
+    }
+    checked.push(pdf);
+    if (count) {
+        return true;
+    }
+}
 for (i of nodes) {
-    if (!isinvalid(i.id)) {
-        count = 0;
-        for (j of checked) {
-            if (i.pdf == j) {
-                count = count + 1;
-            }
-        }
-        checked.push(i.pdf);
-        if (!count) {
-            command += i.id + " " + i.pdf.replace("/tempreport/","").replace(suffix,"");
-        }
+    if (!isinvalid(i.id) && !isduplicate(i.pdf)) {
+        command += i.id + " " + i.pdf.replace("/tempreport/","").replace(suffix,"");
     }
     command += '\n';
 }
