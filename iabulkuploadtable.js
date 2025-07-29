@@ -1,5 +1,5 @@
-count = 0;
 suffix = "_mmu1.pdf";
+previous = "";
 checked = [];
 imperfect = [];
 output = 'identifier,file,REMOTE_NAME,title,date,mediatype,collection\n';
@@ -22,19 +22,26 @@ isduplicate = (pdf) => {
         return true;
     }
 }
+hasmask = (id) => {
+    for (j of mask) {
+        if (id == j.id) {
+            citation = j.citation[0];
+            pdf = j.pdf;
+        }
+    }
+}
 for (i of nodes) {
     citation = i.citation[0];
+    pdf = i.pdf;
+    hasmask(i.id);
     for (k of [["CLJ Rep", "CLJRep", "Current Law Journal Reprint", "cljrep"], ["CLJ", "CLJ", "Current Law Journal", "clj"]]) {
         if (citation.includes(k[0])) {
-            citation = i.citation[0].replace(" " + k[0], "").replace("[", "").replace("]", "").split(" ");
-            cite = i.citation[0].replace(" " + k[0], "").replace("[", "").replace("]", "").replace("  ", " ").replaceAll(" ", "_");
+            cite = citation.replace(" " + k[0], "").replace("[", "").replace("]", "").replace("  ", " ").replaceAll(" ", "_");
             testing = "/tempreport/" + k[1] + "_" + cite + suffix;
-            if (testing != i.pdf) {
-                imperfect.push([testing, i.pdf, ('' + isinvalid(i.id)).replace("true", "not in table").replace("undefined", "in table")]);
+            if (testing != pdf) {
+                imperfect.push([testing, pdf, ('' + isinvalid(i.id)).replace("true", "not in table").replace("undefined", "in table")]);
             }
-            if (count == 0) {
-                previous = "";
-            }
+            citation = citation.replace(" " + k[0], "").replace("[", "").replace("]", "").split(" ");
             if (citation[1] != "") {
                 volume = '_' + citation[1];
                 volume2 = ', Volume ' + citation[1];
@@ -43,12 +50,12 @@ for (i of nodes) {
                 volume2 = '';
             }
             identifier = k[3] + "_" + citation[0] + volume;
-            if (!isinvalid(i.id) && !isduplicate(i.pdf)) {
+            if (!isinvalid(i.id) && !isduplicate(pdf)) {
                 if (previous != identifier) {
                     output += identifier;
                 }
                 output += ',"' + i.pdf.replace("/tempreport/", "").replace(suffix, "") + '"';
-                output += ',"' + i.pdf.replace("/tempreport/", "").replace(suffix, "").replaceAll("_", " ") + ".pdf" + '"';
+                output += ',"' + pdf.replace("/tempreport/", "").replace(suffix, "").replaceAll("_", " ") + ".pdf" + '"';
                 if (previous != identifier) {
                     output += ',"' + k[2] + ', ' + citation[0] + volume2 + '"';
                     output += ',[' + citation[0] + ']';
@@ -60,6 +67,5 @@ for (i of nodes) {
         }
     }
     output += '\n';
-    count++;
 }
 console.log(output.slice(0, -1));
