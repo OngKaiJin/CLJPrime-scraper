@@ -60,7 +60,7 @@ for (i of nodes) {
                     output += ',"' + k[2] + ', ' + citation[0] + volume2 + '"';
                     output += ',[' + citation[0] + ']';
                     output += ',texts';
-                    output += ',opensource';
+                    output += ',current-law-journal';
                 }
                 previous = identifier;
             }
